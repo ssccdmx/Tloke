@@ -1,211 +1,795 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <script src="https://kit.fontawesome.com/4a84d99523.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Archivo del chatbot -->
     <script src="js/chatbox copy 2.js" defer></script>
-    <link rel="icon" href="img/ico/UCS.png">
+
     <title>Asistente Virtual</title>
-    <style>
-        #start-btn {
-            background-color: #FFF; /* Color inicial del botón */
-            color: var(--primario);
-            border: none;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            align-items: center;
-            font-size: 20px;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: background-color 0.3s, transform 0.3s;
-            margin-right: 55px;
-            width: auto;
-            height: auto;
-        }
 
-        #start-btn.recording {
-            background-color: #FFf; /* Color cuando el micrófono está activo */
-            font-size: 25px;
-            animation-name: parpadeo;
-            animation-duration: 1s;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
 
-            -webkit-animation-name:parpadeo;
-            -webkit-animation-duration: 1s;
-            -webkit-animation-timing-function: linear;
-            -webkit-animation-iteration-count: infinite;
-            }
+<style>
 
-            @-moz-keyframes parpadeo{  
-                0% { opacity: 1.0; }
-                50% { opacity: 0.0; }
-                100% { opacity: 1.0; }
-            }
+#start-btn {
 
-            @-webkit-keyframes parpadeo {  
-                0% { opacity: 1.0; }
-                50% { opacity: 0.0; }
-                100% { opacity: 1.0; }
-            }
+    background-color: #FFF;
+    color: var(--primario);
+    border:none;
 
-            @keyframes parpadeo {  
-                0% { opacity: 1.0; }
-                50% { opacity: 0.0; }
-                100% { opacity: 1.0; }
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
 
-        }
+    font-size:20px;
 
-        #start-btn i {
-            margin-right: 0px;
-        }
-    </style>
+    cursor:pointer;
+
+    border-radius:50%;
+
+    transition:.3s;
+
+    margin-right:10px;
+
+    width:40px;
+    height:40px;
+
+}
+
+
+#start-btn.recording {
+
+    background-color:#FFF;
+
+    font-size:25px;
+
+    animation: parpadeo 1s infinite;
+
+}
+
+
+
+@keyframes parpadeo {
+
+    0%{
+        opacity:1;
+    }
+
+    50%{
+        opacity:0;
+    }
+
+    100%{
+        opacity:1;
+    }
+
+}
+
+
+/* BOTON VOZ */
+
+#voice-btn,
+#stop-voice-btn {
+
+
+    background:#fff;
+
+    border:none;
+
+    cursor:pointer;
+
+    border-radius:50%;
+
+    width:40px;
+
+    height:40px;
+
+    font-size:18px;
+
+    color:var(--primario);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-left:5px;
+
+}
+
+
+#voice-btn.active {
+
+    color:green;
+
+}
+
+
+#stop-voice-btn {
+
+    color:red;
+
+}
+
+
+
+</style>
+
+
 </head>
+
+
 
 <body>
 
-    <!--loading-->
-    <div id="contenedor_carga">
-        <div id="carga"></div>
-    </div>
 
-    <script>
-        window.onload=function() {
-            var contenedor=document.getElementById('contenedor_carga');
-            contenedor.style.visibility='hidden';
-            contenedor.style.opacity='.1';
-        }
+<!-- LOADING -->
 
-        // Solicitar permiso para usar el micrófono al cargar la página
-        window.addEventListener('load', () => {
-            if ('mediaDevices' in navigator && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(stream => {
-                        console.log('Permiso para usar el micrófono concedido.');
-                        stream.getTracks().forEach(track => track.stop()); // Detener inmediatamente para no dejarlo activo
-                    })
-                    .catch(error => {
-                        console.error('Error al solicitar el acceso al micrófono:', error);
-                        alert('Necesitas conceder acceso al micrófono para usar esta función.');
-                    });
-            } else {
-                alert('Tu navegador no soporta el acceso al micrófono.');
-            }
+<div id="contenedor_carga">
+
+    <div id="carga"></div>
+
+</div>
+
+
+
+<script>
+
+window.onload=function(){
+
+    let contenedor=document.getElementById('contenedor_carga');
+
+    contenedor.style.visibility='hidden';
+
+    contenedor.style.opacity='.1';
+
+}
+
+
+
+// Solicitar permiso del micrófono
+
+window.addEventListener('load',()=>{
+
+
+    if(navigator.mediaDevices &&
+       navigator.mediaDevices.getUserMedia){
+
+
+        navigator.mediaDevices
+        .getUserMedia({audio:true})
+
+        .then(stream=>{
+
+            console.log(
+            "Permiso de micrófono concedido"
+            );
+
+
+            stream.getTracks()
+            .forEach(track=>track.stop());
+
+
+        })
+
+
+        .catch(error=>{
+
+
+            console.error(
+            "Error micrófono:",
+            error
+            );
+
+
         });
-    </script>
-    <!--End Loading-->
 
-    <button class="chatbot-toggler">
-        <span class="material-symbols-outlined"><i class="fa-solid fa-robot"></i></span>
-        <span class="material-symbols-outlined"><i class="fa-solid fa-xmark"></i></span>
-    </button>
 
-    <!--Chatbox-->
-    <div class="chatbot">
-        <header>
-            <h2>Chatbot - Tloke</h2>
-            <span class="close-btn material-symbols-outlined"><i class="fa-solid fa-xmark"></i></span>
-        </header>
+    }
 
-        <ul class="chatbox">
-            <li class="chat entrante">
-                <span class="material-symbols-outlined"><i class="fa-solid fa-robot"></i></span>
-                <p>¡Hola soy Tloke!, el asistente virtual de la DUCS ¿En qué puedo ayudarte hoy?</p>
-            </li>
-        </ul>
 
-        <div class="chat-input">
-            <textarea id="message-input" placeholder="Ingrese mensaje..." required></textarea>
-            <span id="send-btn" class="material-symbols-outlined"><i class="fa-regular fa-paper-plane"></i></span>
-            <button id="start-btn"><i class="fa-solid fa-microphone"></i></button>
-        </div>
+});
 
-        <!-- Incluye el script de jQuery aquí -->
-        <script src="https://code.jquery.com/jquery-3.0.0.js" integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo=" crossorigin="anonymous"></script>
 
-        <script>
-            if (!('webkitSpeechRecognition' in window)) {
-                alert('Tu navegador no soporta la Web Speech API. Por favor, usa Google Chrome.');
-            } else {
-                const recognition = new webkitSpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
+</script>
 
-                const startButton = document.getElementById('start-btn');
-                const sendButton = document.getElementById('send-btn');
-                const messageInput = document.getElementById('message-input');
-                let timeout;
 
-                const startRecognition = () => {
-                    messageInput.value = ''; // Limpia el campo de texto antes de iniciar
-                    startButton.disabled = true; // Desactiva el botón al iniciar
 
-                    startButton.classList.add('recording'); // Cambia el estilo del botón
-                    startButton.innerHTML = '<p>...</p>'; // Cambia el ícono
+<!-- FIN LOADING -->
 
-                    // Establece un temporizador de 30 segundos
-                    timeout = setTimeout(() => {
-                        recognition.stop();
-                        startButton.disabled = false; // Reactiva el botón
-                        startButton.classList.remove('recording');
-                        startButton.innerHTML = '<i class="fa-solid fa-microphone"></i>'; // Cambia el ícono al original
-                        alert('Micrófono detenido por inactividad'); // Mostrar alerta en lugar de texto
-                    }, 15000); // 15,000 ms = 15 segundos
 
-                    recognition.start();
-                };
 
-                recognition.onstart = () => {
-                    messageInput.placeholder = 'Escuchando...'; // Cambia el placeholder en lugar del value
-                };
 
-                recognition.onresult = (event) => {
-                    clearTimeout(timeout); // Limpia el temporizador si se recibe un resultado
-                    let transcript = '';
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        transcript += event.results[i][0].transcript;
-                    }
-                    messageInput.value = transcript;
-                };
 
-                recognition.onend = () => {
-                    messageInput.placeholder = 'Ingrese mensaje...'; // Restablece el placeholder
-                    startButton.disabled = false; // Reactiva el botón cuando se detiene el reconocimiento
-                    startButton.classList.remove('recording');
-                    startButton.innerHTML = '<i class="fa-solid fa-microphone"></i>'; // Cambia el ícono al original
-                };
+<!-- BOTON ABRIR CHAT -->
 
-                recognition.onerror = (event) => {
-                    clearTimeout(timeout); // Limpia el temporizador en caso de error
-                    if (event.error === 'not-allowed') {
-                        alert('Error: Acceso al micrófono denegado. Asegúrate de permitir el acceso al micrófono.'); // Mostrar alerta en lugar de texto
-                    } else {
-                        alert(`Error: ${event.error}`); // Mostrar alerta en lugar de texto
-                    }
-                    startButton.disabled = false; // Reactiva el botón en caso de error
-                    startButton.classList.remove('recording');
-                    startButton.innerHTML = '<i class="fa-solid fa-microphone"></i>'; // Cambia el ícono al original
-                };
 
-                // Detener reconocimiento de voz, habilitar botón, y no reiniciar automáticamente después de enviar el mensaje
-                sendButton.onclick = () => {
-                    recognition.stop();
-                    startButton.disabled = false; // Reactiva el botón después de enviar el mensaje
-                    startButton.classList.remove('recording');
-                    startButton.innerHTML = '<i class="fa-solid fa-microphone"></i>'; // Cambia el ícono al original
-                    // Aquí puedes agregar la lógica para enviar el mensaje al servidor o al chatbot
-                };
+<button class="chatbot-toggler">
 
-                startButton.onclick = startRecognition;
-            }
-        </script>
-    </div>
+
+    <span class="material-symbols-outlined">
+
+        <i class="fa-solid fa-robot"></i>
+
+    </span>
+
+
+    <span class="material-symbols-outlined">
+
+        <i class="fa-solid fa-xmark"></i>
+
+    </span>
+
+
+</button>
+
+
+
+
+
+<!-- CHATBOX -->
+
+
+<div class="chatbot">
+
+
+<header>
+
+
+<h2>
+Chatbot - Tloke
+</h2>
+
+
+<span class="close-btn material-symbols-outlined">
+
+<i class="fa-solid fa-xmark"></i>
+
+</span>
+
+
+</header>
+
+
+
+
+
+<ul class="chatbox">
+
+
+<li class="chat entrante">
+
+
+<span class="material-symbols-outlined">
+
+<i class="fa-solid fa-robot"></i>
+
+</span>
+
+
+<p>
+
+¡Hola soy Tloke!, el asistente virtual de la DUCS ¿En qué puedo ayudarte hoy?
+
+</p>
+
+
+</li>
+
+
+</ul>
+
+<!-- AREA DE ESCRITURA -->
+
+<div class="chat-input">
+
+
+<textarea 
+id="message-input" 
+placeholder="Ingrese mensaje..." 
+required>
+</textarea>
+
+
+
+<!-- BOTON ENVIAR -->
+
+<span 
+id="send-btn" 
+class="material-symbols-outlined">
+
+<i class="fa-regular fa-paper-plane"></i>
+
+</span>
+
+
+
+<!-- BOTON MICROFONO -->
+
+<button id="start-btn">
+
+<i class="fa-solid fa-microphone"></i>
+
+</button>
+
+
+
+<!-- BOTON ACTIVAR/DESACTIVAR VOZ -->
+
+<button id="voice-btn" class="active">
+
+<i class="fa-solid fa-volume-high"></i>
+
+</button>
+
+
+
+<!-- BOTON DETENER VOZ -->
+
+<button id="stop-voice-btn">
+
+<i class="fa-solid fa-volume-xmark"></i>
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+<!-- JQUERY -->
+
+<script 
+src="https://code.jquery.com/jquery-3.0.0.js"
+integrity="sha256-jrPLZ+8vDxt2FnE1zvZXCkCcebI/C8Dt5xyaQBjxQIo="
+crossorigin="anonymous">
+</script>
+
+
+
+
+<script>
+
+
+//================================================
+// RECONOCIMIENTO DE VOZ
+//================================================
+
+
+if (!('webkitSpeechRecognition' in window)) {
+
+
+    alert(
+    'Tu navegador no soporta reconocimiento de voz. Usa Google Chrome.'
+    );
+
+
+}
+
+else {
+
+
+const recognition =
+new webkitSpeechRecognition();
+
+
+
+recognition.continuous = true;
+
+recognition.interimResults = true;
+
+
+
+const startButton =
+document.getElementById('start-btn');
+
+
+const sendButton =
+document.getElementById('send-btn');
+
+
+const messageInput =
+document.getElementById('message-input');
+
+
+
+let timeout;
+
+
+
+function iniciarReconocimiento(){
+
+
+    messageInput.value="";
+
+
+    startButton.disabled=true;
+
+
+    startButton.classList.add("recording");
+
+
+    startButton.innerHTML="<p>...</p>";
+
+
+
+    timeout=setTimeout(()=>{
+
+
+        recognition.stop();
+
+
+        startButton.disabled=false;
+
+
+        startButton.classList.remove("recording");
+
+
+        startButton.innerHTML=
+        '<i class="fa-solid fa-microphone"></i>';
+
+
+
+        alert(
+        "Micrófono detenido por inactividad"
+        );
+
+
+
+    },15000);
+
+
+
+    recognition.start();
+
+
+
+}
+
+
+
+recognition.onstart=function(){
+
+
+    messageInput.placeholder=
+    "Escuchando...";
+
+
+};
+
+
+
+recognition.onresult=function(event){
+
+
+    clearTimeout(timeout);
+
+
+
+    let texto="";
+
+
+
+    for(
+    let i=event.resultIndex;
+    i<event.results.length;
+    i++
+    ){
+
+        texto+=event.results[i][0].transcript;
+
+    }
+
+
+
+    messageInput.value=texto;
+
+
+
+};
+
+
+
+recognition.onend=function(){
+
+
+
+    messageInput.placeholder=
+    "Ingrese mensaje...";
+
+
+
+    startButton.disabled=false;
+
+
+
+    startButton.classList.remove(
+    "recording"
+    );
+
+
+
+    startButton.innerHTML=
+    '<i class="fa-solid fa-microphone"></i>';
+
+
+
+};
+
+
+
+
+recognition.onerror=function(event){
+
+
+
+    clearTimeout(timeout);
+
+
+
+    alert(
+    "Error de micrófono: "+event.error
+    );
+
+
+
+    startButton.disabled=false;
+
+
+
+    startButton.classList.remove(
+    "recording"
+    );
+
+
+
+    startButton.innerHTML=
+    '<i class="fa-solid fa-microphone"></i>';
+
+
+
+};
+
+
+
+
+sendButton.onclick=function(){
+
+
+
+    recognition.stop();
+
+
+
+    startButton.disabled=false;
+
+
+
+    startButton.classList.remove(
+    "recording"
+    );
+
+
+
+    startButton.innerHTML=
+    '<i class="fa-solid fa-microphone"></i>';
+
+
+
+};
+
+
+
+
+startButton.onclick=iniciarReconocimiento;
+
+
+
+}
+
+
+
+
+
+//================================================
+// CONTROL DE VOZ DEL CHATBOT
+//================================================
+
+
+let vozActiva=true;
+
+
+
+const voiceButton =
+document.getElementById("voice-btn");
+
+
+const stopVoiceButton =
+document.getElementById("stop-voice-btn");
+
+
+
+
+
+voiceButton.onclick=function(){
+
+
+
+    vozActiva=!vozActiva;
+
+
+
+    if(vozActiva){
+
+
+
+        voiceButton.classList.add(
+        "active"
+        );
+
+
+
+        voiceButton.innerHTML=
+        '<i class="fa-solid fa-volume-high"></i>';
+
+
+
+    }
+
+    else {
+
+
+
+        speechSynthesis.cancel();
+
+
+
+        voiceButton.classList.remove(
+        "active"
+        );
+
+
+
+        voiceButton.innerHTML=
+        '<i class="fa-solid fa-volume-xmark"></i>';
+
+
+
+    }
+
+
+
+};
+
+
+
+
+
+stopVoiceButton.onclick=function(){
+
+
+
+    speechSynthesis.cancel();
+
+
+
+};
+
+
+
+
+
+// Esta función es utilizada por chatbox copy 2.js
+
+window.hablar=function(texto){
+
+
+
+    if(!vozActiva)
+    return;
+
+
+
+    if(!("speechSynthesis" in window))
+    return;
+
+
+
+
+    speechSynthesis.cancel();
+
+
+
+
+    let mensaje =
+    new SpeechSynthesisUtterance(texto);
+
+
+
+
+    mensaje.lang="es-MX";
+
+
+    mensaje.rate=1;
+
+
+    mensaje.pitch=1;
+
+
+    mensaje.volume=1;
+
+
+
+
+    let voces =
+    speechSynthesis.getVoices();
+
+
+
+
+    let voz =
+    voces.find(
+    v=>v.lang==="es-MX"
+    )
+
+    ||
+
+    voces.find(
+    v=>v.lang.startsWith("es")
+    );
+
+
+
+
+    if(voz){
+
+        mensaje.voice=voz;
+
+    }
+
+
+
+
+    speechSynthesis.speak(
+    mensaje
+    );
+
+
+
+};
+
+
+
+
+speechSynthesis.onvoiceschanged=function(){
+
+    speechSynthesis.getVoices();
+
+};
+
+
+
+</script>
+
+
 
 </body>
+
 </html>
