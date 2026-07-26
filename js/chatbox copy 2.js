@@ -8,35 +8,68 @@ let userMessage;
 let questionNum = 0; // Contador de preguntas
 const inputInitHeight = chatInput.scrollHeight;
 
+// ============================
+// COLA DE LECTURA
+// ============================
+
+let colaVoz = [];
+let leyendo = false;
+
+function hablar(texto) {
+
+    colaVoz.push(texto);
+
+    if (!leyendo) {
+        leerSiguiente();
+    }
+
+}
+
+function leerSiguiente() {
+
+    if (colaVoz.length === 0) {
+        leyendo = false;
+        return;
+    }
+
+    leyendo = true;
+
+    const mensaje = new SpeechSynthesisUtterance(colaVoz.shift());
+
+    mensaje.lang = "es-MX";
+    mensaje.rate = 1;
+    mensaje.pitch = 1;
+
+    mensaje.onend = function () {
+        leerSiguiente();
+    };
+
+    speechSynthesis.speak(mensaje);
+
+}
+
+
 //======================================================
 //      VOZ DEL CHATBOT
 //======================================================
 
 function hablar(texto) {
-
     if (!('speechSynthesis' in window)) return;
-
     // Detener cualquier voz anterior
     window.speechSynthesis.cancel();
-
     const mensaje = new SpeechSynthesisUtterance(texto);
-
     mensaje.lang = "es-MX";
     mensaje.rate = 1;
     mensaje.pitch = 1;
     mensaje.volume = 1;
-
     const voces = window.speechSynthesis.getVoices();
-
     const voz =
         voces.find(v => v.lang === "es-MX") ||
         voces.find(v => v.lang === "es-ES") ||
         voces.find(v => v.lang.startsWith("es"));
-
     if (voz) {
         mensaje.voice = voz;
     }
-
     window.speechSynthesis.speak(mensaje);
 }
 
@@ -49,16 +82,12 @@ window.speechSynthesis.onvoiceschanged = () => {
 //======================================================
 
 const createChatLi = (message, className) => {
-
     const chatLi = document.createElement("li");
-
     chatLi.classList.add("chat", className);
-
     let chatContent =
         className === "saliente"
             ? `<p></p>`
-            : `<span class="material-symbols-outlined"><i class="fa-solid fa-robot"></i></span><p></p>`;
-
+            : `<span class="material-symbols-outlined"><i><img src="img/Tessia.png" alt="Descripción de la imagen" width="40" height="40"></i></span><p></p>`;
     chatLi.innerHTML = chatContent;
 
     chatLi.querySelector("p").textContent = message;
@@ -367,18 +396,12 @@ const handleChat = () => {
 
     setTimeout(() => {
 
-        // Generar respuesta
-        const response = generateResponse(userMessage);
-
-        const entranteChatLi =
-            createChatLi(response, "entrante");
-
-        chatbox.appendChild(entranteChatLi);
-
-        chatbox.scrollTo(0, chatbox.scrollHeight);
-
-        // Leer la respuesta principal
-        hablar(response);
+    // Generar respuesta
+    const response = generateResponse(userMessage);
+    const entranteChatLi = createChatLi(response, "entrante");
+    chatbox.appendChild(entranteChatLi);
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+    hablar(response);
 
     }, 600);
 
