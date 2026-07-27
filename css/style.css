@@ -254,12 +254,10 @@ body{
     min-width:42px;
     border:none;
     border-radius:50%;
-    background:white;
     display:flex;
     justify-content:center;
     align-items:center;
     cursor:pointer;
-    color:var(white);
     font-size:18px;
 }
 

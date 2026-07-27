@@ -87,7 +87,7 @@ const createChatLi = (message, className) => {
     let chatContent =
         className === "saliente"
             ? `<p></p>`
-            : `<span class="material-symbols-outlined"><i><img src="img/Tessia.png" alt="Descripción de la imagen" width="40" height="40"></i></span><p></p>`;
+            : `<span class="material-symbols-outlined"><i><img src="img/TessiaButton.png" alt="Descripción de la imagen" width="40" height="40"></i></span><p></p>`;
     chatLi.innerHTML = chatContent;
 
     chatLi.querySelector("p").textContent = message;
@@ -181,41 +181,26 @@ const createChatLi4 = (message, className) => {
 const setQuestionNumber = (userMessage) => {
 
     const mentionRegex = /(hola|buenos d|buenas no|buenas ta|R11|R4)/i;
-
-    const specificWord1 = /(unidad de c|de contacto|secretario|UCS)/i;
-    const specificWord2 = /(asuntos|internos|ext queja contra|ext. queja contra|pretor|extension queja|extensión queja)/i;
-    const specificWord3 = /(ext brigada|ext. brigada|extension brigada|extensión brigada|ext vigilan|ext. vigilan|extension vigilan|extensión vigilan|ext animal|ext. animal|extension animal|extensión animal|ext bva|ext. bva|extension bva|extensión bva)/i;
+    const specificWord1 = /(Base Tetra)/i;
+    const specificWord2 = /(prueba)/i;
+    const specificWord3 = /(ZXASASAS|ASASASA)/i;
     const specificWord4 = /(asuntos|internos|ext queja contra|ext. queja contra|pretor|extension queja|extensión queja)/i;
     const specificWord5 = /(asuntos|internos|ext queja contra|ext. queja contra|pretor|extension queja|extensión queja)/i;
 
     if (mentionRegex.test(userMessage)) {
-
         questionNum = 0;
-
     } else if (specificWord1.test(userMessage)) {
-
         questionNum = 1;
-
     } else if (specificWord2.test(userMessage)) {
-
         questionNum = 2;
-
     } else if (specificWord3.test(userMessage)) {
-
         questionNum = 3;
-
     } else if (specificWord4.test(userMessage)) {
-
         questionNum = 4;
-
     } else if (specificWord5.test(userMessage)) {
-
         questionNum = 5;
-
     } else {
-
         questionNum = 5;
-
     }
 
 };
@@ -244,12 +229,10 @@ const generateResponse = (userMessage) => {
             setTimeout(() => {
 
                 const response =
-                    "Estamos ubicados en Arcos de Belén 79, primer piso, colonia Centro, alcaldía Cuauhtémoc, C.P. 06000.\n\n" +
-                    "Contamos con más canales para la recepción de solicitudes ciudadanas como lo son:\n\n" +
-                    "Correo: ucontacto@ssc.cdmx.gob.mx\n" +
-                    "WhatsApp: 55 4331 9636\n" +
-                    "Twitter: @UCS_GCDMX\n" +
-                    "SUAC y la aplicación Mi Policía.";
+                    "Estamos ubicados en Sidar y Rovirosa 169, colonia El Parque, alcaldía Venustiano Carranza, C.P. 15970.\n\n" +
+                    "Contamos con más canales para la recepción de solicitudes como lo son:\n\n" +
+                    "WhatsApp: 72 0308 2047\n" +
+                    "Ventanilla de recepción de documentos.";
 
                 const entranteChatLi = createChatLi2(response, "entrante");
 
@@ -277,7 +260,7 @@ const generateResponse = (userMessage) => {
 
             }, 1000);
 
-            return "Nuestro número telefónico es 55 5209 9898. Tenemos servicio los 365 días del año, las 24 horas del día.";
+            return "Nuestro número telefónico es 55 5242 5100, extensión 4204. Tenemos servicio los 365 días del año, las 24 horas del día.";
 
         //==================================================
         // ASUNTOS INTERNOS
